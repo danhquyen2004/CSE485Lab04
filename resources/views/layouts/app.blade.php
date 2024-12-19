@@ -1,3 +1,3 @@
-<div>
-    <!-- When there is no desire, all things are at peace. - Laozi -->
+<div class="container mt-4">
+        @yield('content')
 </div>
