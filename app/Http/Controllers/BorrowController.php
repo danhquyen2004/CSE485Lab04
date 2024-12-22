@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Borrow;
 use Illuminate\Http\Request;
+use App\Models\Reader;
+use App\Models\Book;
 
 class BorrowController extends Controller
 {
@@ -21,7 +23,9 @@ class BorrowController extends Controller
      */
     public function create()
     {
-        return view('borrows.create');
+        $readers = Reader::all();
+        $books = Book::all();
+        return view('borrows.create', compact('readers', 'books'));
     }
 
     /**
@@ -29,23 +33,25 @@ class BorrowController extends Controller
      */
     public function store(Request $request)
     {
+        //dd($request->all());
         $request->validate([
-            'title' => 'required',
-            'description' => 'required',
+            'reader_id' => 'required|exists:readers,id',
+            'book_id' => 'required|exists:books,id',
+            'borrow_date' => 'required|date',
+            'return_date' => 'nullable|date|after_or_equal:borrow_date',
+            'status' => 'required|in:0,1',
         ]);
-
-        $completed = $request->has('completed') ? 1 : 0;
-
         Borrow::create([
-            'title' => $request->input('title'),
-            'description' => $request->input('description'),
-            'long_description' => $request->input('long_description'),
-            'completed' => $completed,
+            'reader_id' => $request->input('reader_id'), // ID của reader từ truy vấn
+            'book_id' => $request->input('book_id'),     // ID của book từ truy vấn
+            'borrow_date' => $request->input('borrow_date'),
+            'return_date' => $request->input('return_date'),
+            'status' => $request->input('status'),
         ]);
 
         return redirect()->route('borrows.index')->with('success', 'Thêm thành công');
-
     }
+
 
     /**
      * Display the specified resource.
