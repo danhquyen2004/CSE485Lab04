@@ -53,7 +53,13 @@
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary"
                                             data-bs-dismiss="modal">Close</button>
-                                        <button type="button" class="btn btn-primary">Save changes</button>
+                                            <form action="{{ route('books.destroy', $book->id) }}" method="POST" style="display: inline-block;">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-danger" >Delete</button>
+                            </form>
+
+                                        <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
                                     </div>
                                 </div>
                             </div>

@@ -12,7 +12,7 @@ class BookController extends Controller
      */
     public function index()
     {
-        $books = Book::all();
+        $books = Book::orderBy('id','desc')->take(10)->get();
         return view("books.index", compact("books"));
     }
 
@@ -32,6 +32,10 @@ class BookController extends Controller
         $request->validate([
             'name' => 'required',
             'author' => 'required',
+            'category' => 'required',
+            'year' => 'required',
+            'quantity' => 'required',
+
         ]);
 
         Book::create($request->all());
@@ -50,24 +54,33 @@ class BookController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(book $book)
     {
-        //
+        return view('books.edit', compact('book'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, book $book)
     {
-        //
+        $request->validate([
+            'name' => 'required',
+            'author' => 'required',
+            'category' => 'required',
+            'year' => 'required',
+            'quantity' => 'required',
+        ]);
+        $book->update($request->all());
+        return redirect()->route('books.index')->with('success', 'Book updated successfully.');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(book $book)
     {
-        //
+        $book->delete();
+        return redirect()->route('books.index')->with('success', 'Book deleted successfully.');
     }
 }
