@@ -26,7 +26,7 @@
                         <input type="text" class="form-control" id="phone" name="phone" placeholder="Enter phone number" required>
                     </div>
                     <div class="d-flex justify-content-end">
-                        <button type="cancel" class="btn btn-secondary me-2">Cancel</button>
+                        <a href="{{ url()->previous() }}" class="btn btn-secondary me-2">Cancel</a>
                         <button type="submit" class="btn btn-primary">Save</button>
                     </div>
                 </form>
