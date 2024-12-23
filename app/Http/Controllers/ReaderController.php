@@ -47,14 +47,8 @@ class ReaderController extends Controller
 
         return redirect()->route('readers.index')->with('success', 'Reader created successfully.');
     }
-    }
 
-    /**
-     * Display the specified resource.
-     */
-
-     
-    public function show(Reader $reader)
+    public function show(Reader $reader)   
     {
         //
         return view('readers.show', compact('reader'));
