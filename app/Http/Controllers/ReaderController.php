@@ -37,13 +37,7 @@ class ReaderController extends Controller
             'address' => 'required',
             'phone' => 'required'
         ]);
-        $reader = $request->all();
-        if ($request->has('completed')) {
-            $reader['completed'] = true;
-        } else {
-            $reader['completed'] = false;
-        }
-        Reader::create($reader);
+        Reader::create($request->all());
 
         return redirect()->route('readers.index')->with('success', 'Reader created successfully.');
     }
@@ -68,22 +62,16 @@ class ReaderController extends Controller
      */
     public function update(Request $request, Reader $reader)
     {
-        //
         $request->validate([
-            'name' => 'require',
-            'birthday' => 'require',
-            'address' => 'require',
-            'phone' => 'require'
+            'name' => 'required|string|max:255',
+            'birthday' => 'required|date',
+            'address' => 'required|string|max:255',
+            'phone' => 'required|string|max:15'
         ]);
-        $reader = $request->all();
-        if ($request->has('completed')) {
-            $reader['completed'] = true;
-        } else {
-            $reader['completed'] = false;
-        }
-        $reader->update($request->all());
 
-        return redirect()->route('readers.index')->with('success', 'Reader edited successfully.');
+        $reader->update($request->only(['name', 'birthday', 'address', 'phone']));
+
+        return redirect()->route('readers.index')->with('success', 'Reader updated successfully.');
     }
 
     /**

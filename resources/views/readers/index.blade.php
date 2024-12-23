@@ -6,7 +6,7 @@
         @if (session('success'))
             <div class="text-success"> {{ session('success') }}</div>
         @endif
-        <a href="{{ route('readers.create') }}" class="btn btn-primary">Add</a>
+        <a href="{{ route('readers.create') }}" class="btn btn-primary">Add Reader</a>
         <table class="table">
             <thead>
                 <tr>
