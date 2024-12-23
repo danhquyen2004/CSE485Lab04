@@ -2,6 +2,13 @@
 
 @section('content')
 <div class="container">
+    <!-- Hiển thị thông báo thành công -->
+    @if (session('success'))
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                {{ session('success') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @endif
     <h1>Book List</h1>
     <a href="{{ route('books.create') }}" class="btn btn-primary">ADD</a>
     <table class="table">
@@ -70,6 +77,6 @@
             @endforeach
         </tbody>
     </table>
-
+    <div> {{ $books->links() }}</div>
 </div>
 @endsection
