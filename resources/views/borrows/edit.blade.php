@@ -1,28 +1,55 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="container">
-        <h1>Sửa Công Việc</h1>
-        <form action="{{ route('borrows.update', $task->id) }}" method="POST">
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Edit Borrow</h1>
+        <form action="{{ route('borrows.update', $borrow->id) }}" method="POST" class="p-4 border rounded shadow-sm bg-light">
             @csrf
             @method('PUT')
-            <div class="form-group">
-                <label for="title">Tiêu đề:</label>
-                <input type="text" class="form-control" id="title" name="title" value="{{ $task->title }}" required>
+
+            <div class="mb-3">
+                <label for="reader_id" class="form-label">Reader:</label>
+                <select class="form-select" id="reader_id" name="reader_id" required>
+                    <option value="">-- Select Reader --</option>
+                    @foreach ($readers as $reader)
+                        <option value="{{ $reader->id }}" {{ $borrow->reader_id == $reader->id ? 'selected' : '' }}>
+                            {{ $reader->name }}
+                        </option>
+                    @endforeach
+                </select>
             </div>
-            <div class="form-group">
-                <label for="description">Mô tả:</label>
-                <textarea class="form-control" id="description" name="description" required>{{ $task->description }}</textarea>
+
+            <div class="mb-3">
+                <label for="book_id" class="form-label">Book:</label>
+                <select class="form-select" id="book_id" name="book_id" required>
+                    <option value="">-- Select Book --</option>
+                    @foreach ($books as $book)
+                        <option value="{{ $book->id }}" {{ $borrow->book_id == $book->id ? 'selected' : '' }}>
+                            {{ $book->name }}
+                        </option>
+                    @endforeach
+                </select>
             </div>
-            <div class="form-group">
-                <label for="long_description">Mô tả chi tiết:</label>
-                <textarea class="form-control" id="long_description" name="long_description">{{ $task->long_description }}</textarea>
+
+            <div class="mb-3">
+                <label for="borrow_date" class="form-label">Borrow Date:</label>
+                <input type="date" class="form-control" id="borrow_date" name="borrow_date" value="{{ $borrow->borrow_date }}" required>
             </div>
-            <div class="form-group form-check">
-                <input type="checkbox" class="form-check-input" id="completed" name="completed" value="1" {{ $task->completed ? 'checked' : '' }}>
-                <label class="form-check-label" for="completed">Hoàn thành</label>
+
+            <div class="mb-3">
+                <label for="return_date" class="form-label">Return Date:</label>
+                <input type="date" class="form-control" id="return_date" name="return_date" value="{{ $borrow->return_date }}">
             </div>
-            <button type="submit" class="btn btn-primary">Lưu</button>
+
+            <div class="mb-3">
+                <label for="status" class="form-label">Status:</label>
+                <select class="form-select" id="status" name="status" required>
+                    <option value="0" {{ $borrow->status == 0 ? 'selected' : '' }}>Borrowing</option>
+                    <option value="1" {{ $borrow->status == 1 ? 'selected' : '' }}>Returned</option>
+                </select>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100">Save</button>
         </form>
     </div>
 @endsection

@@ -14,7 +14,7 @@ class BorrowController extends Controller
      */
     public function index()
     {
-        $borrows = Borrow::orderBy('updated_at', 'desc')->paginate(5); //
+        $borrows = Borrow::orderBy('updated_at', 'desc')->paginate(5); 
         return view('borrows.index', compact('borrows'));
     }
 
@@ -33,7 +33,6 @@ class BorrowController extends Controller
      */
     public function store(Request $request)
     {
-        //dd($request->all());
         $request->validate([
             'reader_id' => 'required|exists:readers,id',
             'book_id' => 'required|exists:books,id',
@@ -41,66 +40,60 @@ class BorrowController extends Controller
             'return_date' => 'nullable|date|after_or_equal:borrow_date',
             'status' => 'required|in:0,1',
         ]);
+        
         Borrow::create([
-            'reader_id' => $request->input('reader_id'), // ID của reader từ truy vấn
-            'book_id' => $request->input('book_id'),     // ID của book từ truy vấn
+            'reader_id' => $request->input('reader_id'),
+            'book_id' => $request->input('book_id'),
             'borrow_date' => $request->input('borrow_date'),
             'return_date' => $request->input('return_date'),
             'status' => $request->input('status'),
         ]);
 
-        return redirect()->route('borrows.index')->with('success', 'Thêm thành công');
+        return redirect()->route('borrows.index')->with('success', 'Successfully added.');
     }
-
 
     /**
      * Display the specified resource.
      */
-    public function show(Borrow $task)
+    public function show(Borrow $borrow)
     {
-        return view('borrows.show', compact('task'));
+        return view('borrows.show', compact('borrow'));
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Borrow $task)
+    public function edit(Borrow $borrow)
     {
-        return view('borrows.edit', compact('task'));
+        $readers = Reader::all();
+        $books = Book::all();
+        return view('borrows.edit', compact('borrow', 'readers', 'books'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Borrow $task)
+    public function update(Request $request, Borrow $borrow)
     {
-        $request->validate([
-            'title' => 'required',
-            'description' => 'required',
+        $borrow = Borrow::findOrFail($borrow->id);
+        $borrow->update([
+            'reader_id' => $request->input('reader_id'),
+            'book_id' => $request->input('book_id'),
+            'borrow_date' => $request->input('borrow_date'),
+            'return_date' => $request->input('return_date'),
+            'status' => $request->input('status'),
         ]);
 
-        $completed = $request->has('completed') ? 1 : 0;
-
-        $task->update([
-            'title' => $request->input('title'),
-            'description' => $request->input('description'),
-            'long_description' => $request->input('long_description'),
-            'completed' => $completed,
-        ]);
-
-
-        return redirect()->route('borrows.index')->with('success', 'Chỉnh sửa thành công');
-
+        return redirect()->route('borrows.index')->with('success', 'Successfully updated.');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Borrow $task)
+    public function destroy(Borrow $borrow)
     {
-        $task->delete();
+        $borrow->delete();
 
-        return redirect()->route('borrows.index')->with('success', 'Xóa thành công!');
-
+        return redirect()->route('borrows.index')->with('success', 'Successfully deleted!');
     }
 }
