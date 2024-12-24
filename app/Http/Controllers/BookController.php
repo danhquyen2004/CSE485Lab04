@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Book;
+use App\Models\Borrow;
 use Illuminate\Http\Request;
 
 class BookController extends Controller
@@ -39,7 +40,7 @@ class BookController extends Controller
         ]);
 
         Book::create($request->all());
-        
+
         return redirect()->route('books.index')->with('success', 'Book created successfully.');
     }
 
@@ -80,6 +81,17 @@ class BookController extends Controller
      */
     public function destroy(book $book)
     {
+
+        // Kiểm tra các bản ghi liên quan trong bảng borrows
+        $unreturnedBorrows = Borrow::where('book_id', $book->id)
+            ->where('status', '!=', 1) // Giả sử trạng thái "returned" là đã trả
+            ->get();
+
+        if ($unreturnedBorrows->isNotEmpty()) {
+            return redirect()->route('books.index')->with('fail', 'Cannot delete a book that is currently borrowed.');
+        }
+
+        Borrow::where('book_id', $book->id)->delete();
         $book->delete();
         return redirect()->route('books.index')->with('success', 'Book deleted successfully.');
     }

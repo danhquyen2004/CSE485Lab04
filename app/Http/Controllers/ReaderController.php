@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Reader;
+use App\Models\Borrow;
 class ReaderController extends Controller
 {
     /**
@@ -80,6 +81,17 @@ class ReaderController extends Controller
     public function destroy(Reader $reader)
     {
         //
+
+        // Kiểm tra các bản ghi liên quan trong bảng borrows
+        $unreturnedBorrows = Borrow::where('reader_id', $reader->id)
+            ->where('status', '!=', 1)
+            ->get();
+
+        if ($unreturnedBorrows->isNotEmpty()) {
+            return redirect()->route('readers.index')->with('fail', 'Cannot delete a person who has not returned the book.');
+        }
+
+        Borrow::where('reader_id', $reader->id)->delete();
         $reader->delete();
 
         return redirect()->route('readers.index')->with('success', 'Reader deleted successfully.');
